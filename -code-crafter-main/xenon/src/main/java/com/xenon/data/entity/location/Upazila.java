@@ -14,6 +14,7 @@ public class Upazila {
     @Id
     private Long id;
     private String name;
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "DISTRICT_ID")
     private District district;

@@ -45,6 +45,8 @@ public class BlogServiceImpl extends BaseService implements BlogService {
     public ResponseEntity<?> createBlogPostRequest(BlogPostRequest body) {
         validateCreateBlogPostRequest(body);
 
+        hasUpdate();
+
         try {
             blogRepository.save(body.toEntity(getCurrentUser()));
             return success("Blog post created successfully", null);
@@ -141,7 +143,7 @@ public class BlogServiceImpl extends BaseService implements BlogService {
         Page<Blog> blogPage = blogRepository.findByTitleContainingIgnoreCaseOrContentContainingIgnoreCase(
                 query, query, pageable);
 
-        return processBlogPage(blogPage, pageable);
+        return success("Blog posts retrieved successfully", processBlogPage(blogPage, pageable));
     }
 
 

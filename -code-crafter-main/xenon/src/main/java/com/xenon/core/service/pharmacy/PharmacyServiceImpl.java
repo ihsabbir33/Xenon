@@ -28,6 +28,9 @@ public class PharmacyServiceImpl extends BaseService implements PharmacyService 
 
     @Override
     public ResponseEntity<?> createPharmacyRequest(CreatePharmacyAccountRequest body) {
+
+        if (getCurrentUserEmail() == null) throw new ClientException("Please update your profile first");
+
         validateCreatePharmacyRequest(body);
 
         try {

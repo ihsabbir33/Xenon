@@ -33,6 +33,7 @@ public class CommentServiceImpl extends BaseService implements CommentService {
     @Override
     public ResponseEntity<?> createCommentRequest(Long blogId, CreateCommentRequest body) {
         validateCreateCommentRequest(body);
+        hasUpdate();
 
         Blog blog = blogRepository.findById(blogId).orElseThrow(() -> new ClientException("Blog not found"));
 

@@ -55,8 +55,7 @@ public class DoctorArticleServiceImpl extends BaseService implements DoctorArtic
 
 
         try {
-
-            return success("Blog posts retrieved successfully", blogService.getBlogsByCategory(PostCategory.DOCTOR_ARTICLE.name(), pageable));
+            return success("Blog posts retrieved successfully", blogRepository.findAllByCategory(PostCategory.DOCTOR_ARTICLE, pageable));
         } catch (Exception e) {
             log.error(e.getMessage(), e);
             throw new ApiException(e);
@@ -66,22 +65,23 @@ public class DoctorArticleServiceImpl extends BaseService implements DoctorArtic
 
     @Override
     public ResponseEntity<?> searchArticles(String query, Pageable pageable) {
-        Page<Blog> originalPage = blogRepository.findByTitleContainingIgnoreCaseOrContentContainingIgnoreCase(
-                query, query, pageable);
+        Page<Blog> doctorArticlesPage = blogRepository.findByTitleContainingIgnoreCaseAndCategoryAndDoctorCategoryIsNotNull(
+                query, PostCategory.DOCTOR_ARTICLE, pageable);
 
-        // Filter to only include doctor articles
-        List<Blog> filteredContent = originalPage.getContent().stream()
-                .filter(blog -> PostCategory.DOCTOR_ARTICLE.equals(blog.getCategory()))
+        // Filter again to ensure only doctor articles are included
+        // (This might be redundant if the repository method works correctly, but keeping it for safety)
+        List<Blog> filteredContent = doctorArticlesPage.getContent().stream()
+                .filter(blog -> PostCategory.DOCTOR_ARTICLE.equals(blog.getCategory()) && blog.getDoctorCategory() != null)
                 .collect(Collectors.toList());
 
         // Create a new Page object with the filtered content
         Page<Blog> filteredPage = new PageImpl<>(
                 filteredContent,
                 pageable,
-                filteredContent.size()
+                doctorArticlesPage.getTotalElements() // Use the original total for correct pagination
         );
 
-        return processArticlePage(filteredPage, pageable);
+        return success("Blog posts retrieved successfully", filteredPage);
     }
 
     @Override

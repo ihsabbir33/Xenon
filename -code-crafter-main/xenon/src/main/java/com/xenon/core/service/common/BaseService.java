@@ -86,6 +86,10 @@ public abstract class BaseService {
         return getCurrentUser().getPhone();
     }
 
+    protected void hasUpdate() {
+        if(isNullOrBlank(getCurrentUserEmail())) throw  new ClientException("Please update your profile first");
+    }
+
 
     protected String getCurrentUserEmail() {
         return getCurrentUser().getEmail();

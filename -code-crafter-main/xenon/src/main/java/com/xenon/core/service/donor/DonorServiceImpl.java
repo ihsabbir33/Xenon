@@ -38,6 +38,8 @@ public class DonorServiceImpl extends BaseService implements DonorService {
     @Override
     public ResponseEntity<?> createDonorAccountRequest(CreateDonorAccountRequest body) {
 
+        hasUpdate();
+
         validateCreateDonorAccountRequest(body);
 
         try {
@@ -51,6 +53,7 @@ public class DonorServiceImpl extends BaseService implements DonorService {
 
     @Override
     public ResponseEntity<?> bloodGivenInfoRequest(BloodDonationInfoRequest body) {
+        hasUpdate();
         validateBloodGivenInfoRequest(body);
 
         Donor donor = donorRepository.findByUserId(getCurrentUser().getId()).orElseThrow(() -> new ClientException("Donor not found"));
@@ -67,7 +70,7 @@ public class DonorServiceImpl extends BaseService implements DonorService {
 
     @Override
     public ResponseEntity<?> getDonationHistory() {
-
+        hasUpdate();
         donorRepository.findByUserId(getCurrentUser().getId())
                 .orElseThrow(() -> new ClientException("Donor not found"));
         BloodDonationHistoryMetaData metaData = bloodDonationHistoryRepository.getBloodDonationHistoryMetaData(getCurrentUser().getId());
@@ -90,7 +93,7 @@ public class DonorServiceImpl extends BaseService implements DonorService {
     @Override
     public ResponseEntity<?> updateDonorInterest(UpdateDonorInterestRequest body) {
         validateUpdateDonorInterestRequest(body);
-
+        hasUpdate();
         try {
             Donor donor = donorRepository.findByUserId(getCurrentUser().getId())
                     .orElseThrow(() -> new ClientException("Donor not found"));
@@ -107,19 +110,21 @@ public class DonorServiceImpl extends BaseService implements DonorService {
 
     @Override
     public ResponseEntity<?> getDonorProfile() {
-            Donor donor = donorRepository.findByUserId(getCurrentUser().getId())
-                    .orElseThrow(() -> new ClientException("Donor not found"));
+        hasUpdate();
 
-            DonorProfileResponse response = new DonorProfileResponse(
-                    donor.getId(),
-                    donor.getUser().toResponse(),
-                    donor.getBloodType(),
-                    donor.getAge(),
-                    donor.getWeight(),
-                    donor.getInterested(),
-                    donor.getLastDonation(),
-                    donor.isAvailableForDonation());
-        try{
+        Donor donor = donorRepository.findByUserId(getCurrentUser().getId())
+                .orElseThrow(() -> new ClientException("Donor not found"));
+
+        DonorProfileResponse response = new DonorProfileResponse(
+                donor.getId(),
+                donor.getUser().toResponse(),
+                donor.getBloodType(),
+                donor.getAge(),
+                donor.getWeight(),
+                donor.getInterested(),
+                donor.getLastDonation(),
+                donor.isAvailableForDonation());
+        try {
 
             return success("Donor profile retrieved successfully", response);
         } catch (Exception e) {
@@ -130,6 +135,9 @@ public class DonorServiceImpl extends BaseService implements DonorService {
 
     @Override
     public ResponseEntity<?> getAvailableDonors(BloodType bloodType, Long upazilaId, Pageable pageable) {
+
+        hasUpdate();
+
         try {
             Page<Donor> donorsPage;
 

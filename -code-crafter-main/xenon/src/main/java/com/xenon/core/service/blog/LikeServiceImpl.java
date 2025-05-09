@@ -37,6 +37,7 @@ public class LikeServiceImpl extends BaseService implements LikeService {
     @Override
     @Transactional
     public ResponseEntity<?> toggleLike(Long blogId) {
+        hasUpdate();
         Blog blog = blogRepository.findById(blogId)
                 .orElseThrow(() -> new ClientException("Blog not found with id: " + blogId));
 

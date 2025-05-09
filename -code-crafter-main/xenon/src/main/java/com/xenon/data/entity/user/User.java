@@ -22,27 +22,27 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(length = 30)
+    @Column
     private String firstName;
 
-    @Column(length = 30)
+    @Column
     private String lastName;
 
-    @Column(length = 20, nullable = false, unique = true)
+    @Column
     private String phone;
 
-    @Column(length = 50, unique = true)
+    @Column
     private String email;
 
-    @Column(nullable = false)
+    @Column
     private String password;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 20)
+    @Column
     private UserRole role;
 
     @Enumerated(EnumType.STRING)
-    @Column(length = 20)
+    @Column
     private AccountStatus status = AccountStatus.ACTIVE;
 
     @ManyToOne(fetch = FetchType.EAGER)
@@ -58,7 +58,7 @@ public class User {
     private Double longitude;
 
     @Enumerated(EnumType.STRING)
-    @Column(length = 10)
+    @Column
     private Gender gender;
 
     @Column(name = "created_at", updatable = false)
@@ -85,20 +85,7 @@ public class User {
     }
 
     public UserResponse toResponse() {
-        return new UserResponse(
-                this.id,
-                this.firstName,
-                this.lastName,
-                this.phone,
-                this.email,
-                this.role,
-                this.status,
-                this.upazila,
-                this.area,
-                this.latitude,
-                this.longitude,
-                this.gender
-        );
+        return new UserResponse(this.id, this.firstName, this.lastName, this.phone, this.email, this.role, this.status, this.upazila, this.area, this.latitude, this.longitude, this.gender);
     }
 
     @SneakyThrows

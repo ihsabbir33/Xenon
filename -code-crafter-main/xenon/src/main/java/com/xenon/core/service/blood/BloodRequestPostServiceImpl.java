@@ -36,6 +36,7 @@ public class BloodRequestPostServiceImpl extends BaseService implements BloodReq
 
     @Override
     public ResponseEntity<?> createBloodRequestPost(CreateBloodRequestPost body) {
+        hasUpdate();
 
         validateCreateBloodRequestPost(body);
         Upazila upazila = upazilaRepository.findById(body.getUpazilaId()).orElseThrow(() -> new ClientException("No upazila Found"));

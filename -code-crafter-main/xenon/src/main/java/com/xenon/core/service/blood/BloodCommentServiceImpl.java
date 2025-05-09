@@ -22,6 +22,7 @@ public class BloodCommentServiceImpl extends BaseService implements BloodComment
 
     @Override
     public ResponseEntity<?> createBloodCommentRequest(CreateBloodCommentRequest body) {
+        hasUpdate();
         validateCreateBloodResponseRequest(body);
 
         BloodRequestPost post = bloodRequestPostRepository.findById(body.getPostId()).orElseThrow(() -> new ClientException("No post Found!"));

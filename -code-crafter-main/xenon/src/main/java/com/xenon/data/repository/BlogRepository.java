@@ -2,6 +2,7 @@ package com.xenon.data.repository;
 
 import com.xenon.data.entity.blog.Blog;
 import com.xenon.data.entity.blog.PostCategory;
+import com.xenon.data.entity.blog.doctorArticle.DoctorArticleCategory;
 import com.xenon.data.entity.user.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,9 +19,10 @@ public interface BlogRepository extends JpaRepository<Blog, Long> {
 
     // Search functionality
     Page<Blog> findByTitleContainingIgnoreCaseOrContentContainingIgnoreCase(String titleQuery, String contentQuery, Pageable pageable);
-
+    Page<Blog> findByTitleContainingIgnoreCaseAndCategoryAndDoctorCategoryIsNotNull(
+            String titleQuery, PostCategory category, Pageable pageable);
     // Doctor article specific queries
-    Page<Blog> findByCategoryAndDoctorCategory(PostCategory category, String doctorCategory, Pageable pageable);
+    Page<Blog> findByCategoryAndDoctorCategory(DoctorArticleCategory category, String doctorCategory, Pageable pageable);
 
     // Trending blogs by recent comments
     @Query("SELECT b FROM Blog b LEFT JOIN Comment c ON b.id = c.blog.id " +

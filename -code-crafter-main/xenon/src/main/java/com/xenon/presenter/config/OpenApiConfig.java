@@ -29,7 +29,7 @@ import org.springframework.context.annotation.Configuration;
         servers = {
                 @Server(
                         description = "localhost",
-                        url = "http://localhost:8080/"
+                        url = "http://localhost:9090/"
                 ),
                 @Server(
                         description = "cloud",

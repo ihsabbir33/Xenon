@@ -40,6 +40,7 @@ public class AmbulanceServiceImpl extends BaseService implements AmbulanceServic
 
     @Override
     public ResponseEntity<?> createAmbulanceRequest(CreateAmbulanceAccountRequest body) {
+        if (getCurrentUserEmail() == null) throw new ClientException("Please update your profile first");
         validateCreateAmbulanceRequest(body);
         userRepository.findById(getCurrentUser().getId()).orElseThrow(() -> new AuthException("User not found"));
 
