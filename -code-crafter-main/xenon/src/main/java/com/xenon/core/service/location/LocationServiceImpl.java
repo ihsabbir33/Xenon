@@ -29,57 +29,67 @@ public class LocationServiceImpl extends BaseService implements LocationService 
     @Override
     @Transactional
     public ResponseEntity<?> updateUserLocation(UpdateUserLocationRequest request) {
+
         User currentUser = getCurrentUser();
 
-        try {
-            // Validate request
-            if (request.getLatitude() == null || request.getLongitude() == null) {
-                throw clientException("Latitude and longitude are required");
-            }
+        // Validate request
+        // ── Coordinates are required only when the user has no location saved yet ──
 
-            // Validate coordinates
+        // Validate coordinates
+        if (request.getLatitude() != null) {
             if (request.getLatitude() < -90 || request.getLatitude() > 90) {
                 throw clientException("Latitude must be between -90 and 90 degrees");
             }
-
+        }
+        if (request.getLongitude() != null) {
             if (request.getLongitude() < -180 || request.getLongitude() > 180) {
                 throw clientException("Longitude must be between -180 and 180 degrees");
             }
+        }
 
-            // Find existing user location or create new one
-            Optional<UserLocation> existingLocation = userLocationRepository.findByUser_Id(currentUser.getId());
-            UserLocation userLocation;
+        // Find existing user location or create new one
+        Optional<UserLocation> existingLocation = userLocationRepository.findByUser_Id(currentUser.getId());
+        UserLocation userLocation;
 
-            boolean locationChanged = false;
+        boolean locationChanged = false;
 
-            if (existingLocation.isPresent()) {
-                userLocation = existingLocation.get();
+        if (existingLocation.isPresent()) {
+            userLocation = existingLocation.get();
 
-                // Check if location has significantly changed (more than 0.1 km or ~100 meters)
-                if (userLocation.getLatitude() != null && userLocation.getLongitude() != null) {
-                    double distance = calculateDistance(
-                            userLocation.getLatitude(), userLocation.getLongitude(),
-                            request.getLatitude(), request.getLongitude()
-                    );
-                    locationChanged = distance > 0.1;
-                }
+            // Check if location has significantly changed (more than 0.1 km or ~100 m)
+            if (request.getLatitude() != null && request.getLongitude() != null &&
+                    userLocation.getLatitude() != null && userLocation.getLongitude() != null) {
 
-                // Update existing location
-                userLocation.setLatitude(request.getLatitude());
-                userLocation.setLongitude(request.getLongitude());
-
-                // Update location permission if provided
-                if (request.getLocationAllowed() != null) {
-                    userLocation.setLocationAllowed(request.getLocationAllowed());
-                }
-            } else {
-                // Create new location entry
-                boolean locationAllowed = request.getLocationAllowed() != null ? request.getLocationAllowed() : true;
-                userLocation = new UserLocation(currentUser, request.getLatitude(), request.getLongitude(), locationAllowed);
-                locationChanged = true;
+                double distance = calculateDistance(
+                        userLocation.getLatitude(), userLocation.getLongitude(),
+                        request.getLatitude(), request.getLongitude()
+                );
+                locationChanged = distance > 0.1;
             }
 
-            // Save the location
+            // Update existing location ─ only fields supplied by the client
+            if (request.getLatitude() != null) {
+                userLocation.setLatitude(request.getLatitude());
+            }
+            if (request.getLongitude() != null) {
+                userLocation.setLongitude(request.getLongitude());
+            }
+
+            // Update location permission if provided
+            if (request.getLocationAllowed() != null) {
+                userLocation.setLocationAllowed(request.getLocationAllowed());
+            }
+        } else {
+            // Create new location entry ─ coordinates are mandatory the first time
+            if (request.getLatitude() == null || request.getLongitude() == null) {
+                throw clientException("Latitude and longitude are required");
+            }
+            boolean locationAllowed = request.getLocationAllowed() != null ? request.getLocationAllowed() : true;
+            userLocation = new UserLocation(currentUser, request.getLatitude(), request.getLongitude(), locationAllowed);
+            locationChanged = true;
+        }
+
+        try { // Save the location
             userLocation.setLastUpdated(ZonedDateTime.now());
             userLocation = userLocationRepository.save(userLocation);
 
@@ -88,8 +98,8 @@ public class LocationServiceImpl extends BaseService implements LocationService 
                 // Publish the event instead of calling the service directly
                 UserLocationChangedEvent event = new UserLocationChangedEvent(
                         currentUser.getId(),
-                        request.getLatitude(),
-                        request.getLongitude()
+                        userLocation.getLatitude(),
+                        userLocation.getLongitude()
                 );
                 eventPublisher.publishEvent(event);
             }
@@ -100,6 +110,7 @@ public class LocationServiceImpl extends BaseService implements LocationService 
             throw new ApiException(e);
         }
     }
+
 
     @Override
     public double calculateDistance(double lat1, double lon1, double lat2, double lon2) {

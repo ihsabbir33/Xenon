@@ -81,7 +81,7 @@ public class HealthAuthorizationController {
     }
 
     @GetMapping("alert/{alertId}")
-    @PreAuthorize(authorities = {UserRole.HEALTH_AUTHORIZATION, UserRole.ADMIN}, shouldCheckAccountStatus = true)
+    @PreAuthorize( shouldCheckAccountStatus = true)
     @SecurityRequirement(name = "bearerAuth")
     @Operation(summary = "Get Alert by ID",
             description = "Gets a specific alert by ID")

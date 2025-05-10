@@ -94,10 +94,10 @@ public class DonorServiceImpl extends BaseService implements DonorService {
     public ResponseEntity<?> updateDonorInterest(UpdateDonorInterestRequest body) {
         validateUpdateDonorInterestRequest(body);
         hasUpdate();
-        try {
+
             Donor donor = donorRepository.findByUserId(getCurrentUser().getId())
                     .orElseThrow(() -> new ClientException("Donor not found"));
-
+        try {
             donor.setInterested(body.getInterested());
             donorRepository.save(donor);
 

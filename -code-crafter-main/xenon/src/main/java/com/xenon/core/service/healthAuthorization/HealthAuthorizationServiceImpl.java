@@ -200,15 +200,10 @@ public class HealthAuthorizationServiceImpl extends BaseService implements Healt
 
     @Override
     public ResponseEntity<?> getAlertById(Long alertId) {
-        ensureUserIsHealthAuthorization();
 
             AlertTable alert = alertTableRepository.findById(alertId)
                     .orElseThrow(() -> new ClientException("Alert not found"));
 
-            // Verify ownership
-            if (!alert.getHealthAuthorization().getUser().getId().equals(getCurrentUser().getId())) {
-                throw new UnauthorizedException("You don't have permission to view this alert");
-            }
 
             return success("Alert retrieved successfully", AlertResponse.fromEntity(alert));
     }
