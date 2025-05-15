@@ -1,0 +1,311 @@
+/* src/styles/alert-system.css - Add these to your global CSS */
+
+/* Animation for page transitions */
+.page-transition {
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Pulse animation for high severity alerts */
+.pulse-high {
+    animation: pulse-red 2s infinite;
+}
+
+@keyframes pulse-red {
+    0% {
+        box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.4);
+    }
+    70% {
+        box-shadow: 0 0 0 10px rgba(220, 38, 38, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(220, 38, 38, 0);
+    }
+}
+
+/* Toast notification styles */
+.custom-toast {
+    border-radius: 8px;
+    padding: 16px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    max-width: 320px;
+}
+
+.toast-success {
+    background-color: #f0fdf4;
+    border-left: 4px solid #22c55e;
+    color: #166534;
+}
+
+.toast-error {
+    background-color: #fef2f2;
+    border-left: 4px solid #ef4444;
+    color: #b91c1c;
+}
+
+.toast-info {
+    background-color: #eff6ff;
+    border-left: 4px solid #3b82f6;
+    color: #1e40af;
+}
+
+.toast-warning {
+    background-color: #fffbeb;
+    border-left: 4px solid #f59e0b;
+    color: #b45309;
+}
+
+/* Alert card hover effects */
+.alert-card {
+    transition: all 0.3s ease;
+}
+
+.alert-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+}
+
+/* Badge animations */
+.badge-ping {
+    position: relative;
+}
+
+.badge-ping::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background-color: currentColor;
+    opacity: 0.6;
+    transform: scale(1);
+    animation: ping 1.5s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+@keyframes ping {
+    75%, 100% {
+        transform: scale(2);
+        opacity: 0;
+    }
+}
+
+/* Smooth transitions for interactive elements */
+button, a, .transition-all {
+    transition: all 0.2s ease-in-out;
+}
+
+/* Location enabled/disabled styles */
+.location-enabled {
+    background-color: #d1fae5;
+    border-color: #10b981;
+    color: #065f46;
+}
+
+.location-disabled {
+    background-color: #fee2e2;
+    border-color: #ef4444;
+    color: #b91c1c;
+}
+
+/* Skeleton loading animation */
+.loading-skeleton {
+    background: linear-gradient(90deg, #f3f4f6 25%, #e5e7eb 50%, #f3f4f6 75%);
+    background-size: 200% 100%;
+    animation: skeleton-loading 1.5s infinite;
+}
+
+@keyframes skeleton-loading {
+    0% {
+        background-position: 200% 0;
+    }
+    100% {
+        background-position: -200% 0;
+    }
+}
+
+/* Custom scrollbar for notifications */
+.notification-scroll {
+    scrollbar-width: thin;
+    scrollbar-color: #e5e7eb #f9fafb;
+}
+
+.notification-scroll::-webkit-scrollbar {
+    width: 6px;
+}
+
+.notification-scroll::-webkit-scrollbar-track {
+    background: #f9fafb;
+}
+
+.notification-scroll::-webkit-scrollbar-thumb {
+    background-color: #e5e7eb;
+    border-radius: 6px;
+}
+
+/* Status indicators */
+.status-indicator {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+}
+
+.status-active {
+    background-color: #10b981;
+    box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2);
+}
+
+.status-inactive {
+    background-color: #ef4444;
+    box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.2);
+}
+
+/* High-priority notification glow effect */
+.high-priority {
+    box-shadow: 0 0 8px rgba(239, 68, 68, 0.4);
+}
+/* Add these animations to alert-system.css */
+
+/* Bell icon notification animation */
+@keyframes bellRing {
+    0% {
+        transform: rotate(0);
+    }
+    20% {
+        transform: rotate(15deg);
+    }
+    40% {
+        transform: rotate(-15deg);
+    }
+    60% {
+        transform: rotate(7deg);
+    }
+    80% {
+        transform: rotate(-7deg);
+    }
+    100% {
+        transform: rotate(0);
+    }
+}
+
+.bell-animation {
+    animation: bellRing 1s ease-in-out;
+}
+
+.bell-badge-animation {
+    animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes popIn {
+    0% {
+        transform: scale(0);
+        opacity: 0;
+    }
+    80% {
+        transform: scale(1.2);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+/* Notification card animations */
+.notification-card-enter {
+    opacity: 0;
+    transform: translateY(10px);
+}
+
+.notification-card-enter-active {
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 300ms, transform 300ms;
+}
+
+.notification-card-exit {
+    opacity: 1;
+}
+
+.notification-card-exit-active {
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: opacity 300ms, transform 300ms;
+}
+
+/* Pulsing dot for active alerts */
+.pulse-dot {
+    position: relative;
+}
+
+.pulse-dot::before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: inherit;
+    border-radius: 50%;
+    z-index: -1;
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
+    100% {
+        transform: scale(1.5);
+        opacity: 0;
+    }
+}
+
+/* Mobile responsiveness improvements */
+@media (max-width: 640px) {
+    .alert-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .alert-header {
+        flex-direction: column;
+        align-items: start;
+    }
+
+    .alert-actions {
+        margin-top: 1rem;
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .notification-detail-section {
+        padding: 1rem 0.75rem;
+    }
+
+    .notification-detail-header {
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    .notification-detail-map {
+        height: 180px;
+    }
+}
+/* Add this to App.tsx to import styles */
+/* import './styles/alert-system.css'; */
